@@ -1,6 +1,6 @@
-# glint
+# luma
 
-glint is a Rust CLI tool for analyzing and optimizing PrismLauncher storage usage.
+luma is a Rust CLI tool for analyzing and optimizing PrismLauncher storage usage.
 
 Main capabilities
 
@@ -27,6 +27,6 @@ macOS
 
 Non Goals
 
-glint does not modify game data.
+luma does not modify game data.
 
-glint does not alter instance configuration.
+luma does not alter instance configuration.

@@ -1,10 +1,10 @@
 #!/usr/bin/env sh
 set -eu
 
-REPO="${GLINT_REPO:-tukuyomil032/glint}"
-BIN_DIR="${GLINT_BIN_DIR:-$HOME/.local/bin}"
-VERSION_INPUT="${GLINT_VERSION:-latest}"
-ASSET_URL_OVERRIDE="${GLINT_ASSET_URL:-}"
+REPO="${LUMA_REPO:-tukuyomil032/luma-prism}"
+BIN_DIR="${LUMA_BIN_DIR:-$HOME/.local/bin}"
+VERSION_INPUT="${LUMA_VERSION:-latest}"
+ASSET_URL_OVERRIDE="${LUMA_ASSET_URL:-}"
 
 need_cmd() {
   if ! command -v "$1" >/dev/null 2>&1; then
@@ -54,7 +54,7 @@ else
     esac
   fi
 
-  ASSET="glint-${TAG}-${TARGET}.${EXT}"
+  ASSET="luma-prism-${TAG}-${TARGET}.${EXT}"
   URL="https://github.com/${REPO}/releases/download/${TAG}/${ASSET}"
 fi
 
@@ -73,7 +73,7 @@ echo "Downloading $URL"
 curl -fL "$URL" -o "$ARCHIVE_PATH"
 
 tar -xzf "$ARCHIVE_PATH" -C "$TMP_DIR"
-install -m 0755 "$TMP_DIR/glint" "$BIN_DIR/glint"
+install -m 0755 "$TMP_DIR/luma" "$BIN_DIR/luma"
 
-echo "Installed glint to $BIN_DIR/glint"
-echo "Run: glint --help"
+echo "Installed luma to $BIN_DIR/luma"
+echo "Run: luma --help"

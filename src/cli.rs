@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
 #[command(
-    name = "glint",
+    name = "luma",
     version,
     about = "Analyze and clean PrismLauncher disk usage"
 )]
@@ -121,7 +121,7 @@ pub enum Command {
     /// Show per-instance usage
     Usage,
 
-    /// Manage glint configuration
+    /// Manage luma configuration
     Config {
         /// Set default output language
         #[arg(long, value_enum)]

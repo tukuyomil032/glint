@@ -5,7 +5,7 @@ Large installations can exceed
 300k files
 
 
-glint must parallelize
+luma must parallelize
 
 
 Recommended crates

@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 set -eu
 
-BIN_DIR="${GLINT_BIN_DIR:-$HOME/.local/bin}"
-TARGET="$BIN_DIR/glint"
+BIN_DIR="${LUMA_BIN_DIR:-$HOME/.local/bin}"
+TARGET="$BIN_DIR/luma"
 
 if [ -f "$TARGET" ]; then
   rm -f "$TARGET"

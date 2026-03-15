@@ -1,17 +1,17 @@
 <div align="center">
-  <h1>glint</h1>
+  <h1>luma-prism</h1>
   <p><strong>Fast PrismLauncher storage analysis and safe cleanup CLI</strong></p>
 
   <p>
-    <a href="https://github.com/tukuyomil032/glint/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/tukuyomil032/glint/ci.yml?branch=main&label=CI"></a>
-    <a href="https://github.com/tukuyomil032/glint/actions/workflows/release.yml"><img alt="Release" src="https://img.shields.io/github/actions/workflow/status/tukuyomil032/glint/release.yml?branch=main&label=release"></a>
-    <a href="https://github.com/tukuyomil032/glint/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/tukuyomil032/glint/total"></a>
+    <a href="https://github.com/tukuyomil032/luma-prism/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/tukuyomil032/luma-prism/ci.yml?branch=master&label=CI"></a>
+    <a href="https://github.com/tukuyomil032/luma-prism/actions/workflows/release.yml"><img alt="Release" src="https://img.shields.io/github/actions/workflow/status/tukuyomil032/luma-prism/release.yml?branch=master&label=release"></a>
+    <a href="https://github.com/tukuyomil032/luma-prism/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/tukuyomil032/luma-prism/total"></a>
     <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green"></a>
     <a href="https://www.rust-lang.org/"><img alt="Rust" src="https://img.shields.io/badge/rust-2024-orange"></a>
   </p>
 </div>
 
-glint scans PrismLauncher data and helps you reclaim space safely.
+luma-prism scans PrismLauncher data and helps you reclaim space safely.
 
 It focuses on:
 - safe cleanup targets (`cache`, `logs`, `meta`, instance logs/crash reports)
@@ -25,7 +25,7 @@ By default, cleanup runs in dry-run mode and deletion uses the system trash.
 ## Features
 
 - Fast parallel scanning (`rayon` + `walkdir`)
-- English/Japanese output switch via `glint config`
+- English/Japanese output switch via `luma config`
 - Interactive instance selection for `scan`
 - Paged scan report viewer
 - World breakdown mode (`region`, `playerdata`, `poi`, etc.)
@@ -44,39 +44,39 @@ By default, cleanup runs in dry-run mode and deletion uses the system trash.
 ### 1) One-command installer (macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/tukuyomil032/glint/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/tukuyomil032/luma-prism/master/install.sh | sh
 ```
 
 Options:
 
-- Pin a version: `GLINT_VERSION=0.1.0 ...`
-- Change install directory: `GLINT_BIN_DIR=$HOME/bin ...`
+- Pin a version: `LUMA_VERSION=0.1.0 ...`
+- Change install directory: `LUMA_BIN_DIR=$HOME/.local/luma-prism/bin ...`
 
 Local test before push:
 
 ```bash
 cargo build --release
-tar -C target/release -czf /tmp/glint-local-macos.tar.gz glint
-cat install.sh | GLINT_BIN_DIR=/tmp/glint-test/bin GLINT_ASSET_URL=file:///tmp/glint-local-macos.tar.gz sh
+tar -C target/release -czf /tmp/luma-prism-local-macos.tar.gz luma
+cat install.sh | LUMA_BIN_DIR=/tmp/luma-prism-test/bin LUMA_ASSET_URL=file:///tmp/luma-prism-local-macos.tar.gz sh
 ```
 
 ### 2) One-command installer (Windows PowerShell)
 
 ```powershell
-iwr -useb https://raw.githubusercontent.com/tukuyomil032/glint/main/install.ps1 | iex
+iwr -useb https://raw.githubusercontent.com/tukuyomil032/luma-prism/master/install.ps1 | iex
 ```
 
 Options:
 
-- Pin a version: `$env:GLINT_VERSION='0.1.0'`
-- Change install directory: `$env:GLINT_BIN_DIR='C:\\tools\\glint\\bin'`
+- Pin a version: `$env:LUMA_VERSION='0.1.0'`
+- Change install directory: `$env:LUMA_BIN_DIR='C:\\tools\\luma-prism\\bin'`
 
 Local test before push:
 
 ```powershell
 cargo build --release
-Compress-Archive -Path .\target\release\glint.exe -DestinationPath $env:TEMP\glint-local-win.zip -Force
-$env:GLINT_ASSET_URL = "file:///$($env:TEMP -replace '\\','/')/glint-local-win.zip"
+Compress-Archive -Path .\target\release\luma.exe -DestinationPath $env:TEMP\luma-prism-local-win.zip -Force
+$env:LUMA_ASSET_URL = "file:///$($env:TEMP -replace '\\','/')/luma-prism-local-win.zip"
 Get-Content .\install.ps1 -Raw | Invoke-Expression
 ```
 
@@ -84,27 +84,27 @@ Get-Content .\install.ps1 -Raw | Invoke-Expression
 
 Download prebuilt binaries from:
 
-- https://github.com/tukuyomil032/glint/releases
+- https://github.com/tukuyomil032/luma-prism/releases
 
 ### 4) cargo install
 
 From git (works now):
 
 ```bash
-cargo install --git https://github.com/tukuyomil032/glint glint
+cargo install --git https://github.com/tukuyomil032/luma-prism luma-prism
 ```
 
 From crates.io (after publish):
 
 ```bash
-cargo install glint
+cargo install luma-prism
 ```
 
 ### 5) Build from source
 
 ```bash
-git clone https://github.com/tukuyomil032/glint
-cd glint
+git clone https://github.com/tukuyomil032/luma-prism
+cd luma-prism
 cargo build --release
 ```
 
@@ -113,7 +113,7 @@ cargo build --release
 ### macOS / Linux shell
 
 ```bash
-cat scripts/uninstall.sh | GLINT_BIN_DIR=$HOME/.local/bin sh
+cat scripts/uninstall.sh | LUMA_BIN_DIR=$HOME/.local/bin sh
 ```
 
 ### Windows PowerShell
@@ -126,26 +126,26 @@ Get-Content .\scripts\uninstall.ps1 -Raw | Invoke-Expression
 
 ```bash
 # Analyze reclaimable storage
-./target/release/glint scan
+./target/release/luma scan
 
 # Show worlds with breakdown of large buckets
-./target/release/glint worlds --breakdown
+./target/release/luma worlds --breakdown
 
 # Dry-run clean with preview filters and interactive selection
-./target/release/glint clean --dry-run --kind global --min-size 200MB --older-than-days 30 --select
+./target/release/luma clean --dry-run --kind global --min-size 200MB --older-than-days 30 --select
 
 # Apply cleanup (moves files to trash)
-./target/release/glint clean --apply -y
+./target/release/luma clean --apply -y
 ```
 
 ## Commands
 
-- `glint scan`
-- `glint clean`
-- `glint mods`
-- `glint worlds`
-- `glint usage`
-- `glint config`
+- `luma scan`
+- `luma clean`
+- `luma mods`
+- `luma worlds`
+- `luma usage`
+- `luma config`
 
 Useful clean options:
 
@@ -172,7 +172,7 @@ That means your release workflow is driven by `Cargo.toml` version only.
 
 ## Safety
 
-glint is designed to avoid accidental data loss.
+luma-prism is designed to avoid accidental data loss.
 
 - Dry-run is the default cleanup mode
 - Cleanup confirmation is required unless `-y` is set

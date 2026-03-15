@@ -1,6 +1,6 @@
 # CLI Output
 
-glint should use rich terminal output.
+luma should use rich terminal output.
 
 
 Use crates

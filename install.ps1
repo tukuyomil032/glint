@@ -1,9 +1,9 @@
 $ErrorActionPreference = 'Stop'
 
-$repo = if ($env:GLINT_REPO) { $env:GLINT_REPO } else { 'tukuyomil032/glint' }
-$versionInput = if ($env:GLINT_VERSION) { $env:GLINT_VERSION } else { 'latest' }
-$binDir = if ($env:GLINT_BIN_DIR) { $env:GLINT_BIN_DIR } else { Join-Path $env:LOCALAPPDATA 'glint\bin' }
-$assetUrlOverride = if ($env:GLINT_ASSET_URL) { $env:GLINT_ASSET_URL } else { '' }
+$repo = if ($env:LUMA_REPO) { $env:LUMA_REPO } else { 'tukuyomil032/luma-prism' }
+$versionInput = if ($env:LUMA_VERSION) { $env:LUMA_VERSION } else { 'latest' }
+$binDir = if ($env:LUMA_BIN_DIR) { $env:LUMA_BIN_DIR } else { Join-Path $env:LOCALAPPDATA 'luma-prism\bin' }
+$assetUrlOverride = if ($env:LUMA_ASSET_URL) { $env:LUMA_ASSET_URL } else { '' }
 
 $target = 'x86_64-pc-windows-msvc'
 $ext = 'zip'
@@ -42,11 +42,11 @@ else {
         $tag = "v$versionInput"
     }
 
-    $asset = "glint-$tag-$target.$ext"
+    $asset = "luma-prism-$tag-$target.$ext"
     $url = "https://github.com/$repo/releases/download/$tag/$asset"
 }
 
-$tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) ("glint-install-" + [Guid]::NewGuid().ToString('N'))
+$tmpDir = Join-Path ([System.IO.Path]::GetTempPath()) ("luma-prism-install-" + [Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $tmpDir | Out-Null
 
 try {
@@ -58,22 +58,22 @@ try {
 
     Expand-Archive -Path $archivePath -DestinationPath $tmpDir -Force
 
-    $sourceExe = Join-Path $tmpDir 'glint.exe'
+    $sourceExe = Join-Path $tmpDir 'luma.exe'
     if (-not (Test-Path $sourceExe)) {
-        throw 'glint.exe was not found in downloaded archive.'
+        throw 'luma.exe was not found in downloaded archive.'
     }
 
-    $destExe = Join-Path $binDir 'glint.exe'
+    $destExe = Join-Path $binDir 'luma.exe'
     Copy-Item -Force $sourceExe $destExe
 
-    Write-Host "Installed glint to $destExe"
+    Write-Host "Installed luma to $destExe"
 
     $pathItems = $env:Path -split ';'
     if ($pathItems -notcontains $binDir) {
         Write-Host "Add this directory to your PATH if needed: $binDir"
     }
 
-    Write-Host 'Run: glint --help'
+    Write-Host 'Run: luma --help'
 }
 finally {
     Remove-Item -Recurse -Force $tmpDir -ErrorAction SilentlyContinue

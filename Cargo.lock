@@ -427,27 +427,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "glint"
-version = "0.0.1"
-dependencies = [
- "anyhow",
- "blake3",
- "clap",
- "console 0.15.11",
- "dialoguer",
- "dirs",
- "env_logger",
- "indicatif",
- "log",
- "rayon",
- "serde",
- "serde_json",
- "tabled",
- "trash",
- "walkdir",
-]
-
-[[package]]
 name = "hashbrown"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -601,6 +580,27 @@ name = "log"
 version = "0.4.29"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5e5032e24019045c762d3c0f28f5b6b8bbf38563a65908389bf7978758920897"
+
+[[package]]
+name = "luma-prism"
+version = "0.0.1"
+dependencies = [
+ "anyhow",
+ "blake3",
+ "clap",
+ "console 0.15.11",
+ "dialoguer",
+ "dirs",
+ "env_logger",
+ "indicatif",
+ "log",
+ "rayon",
+ "serde",
+ "serde_json",
+ "tabled",
+ "trash",
+ "walkdir",
+]
 
 [[package]]
 name = "memchr"

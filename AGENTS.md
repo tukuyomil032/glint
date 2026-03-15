@@ -22,11 +22,11 @@ This document is written to be readable by both humans and AI agents.
 
 **Project Name**
 
-glint
+luma
 
 **Description**
 
-glint is a high-performance Rust CLI tool that analyzes and optimizes PrismLauncher storage usage.
+luma is a high-performance Rust CLI tool that analyzes and optimizes PrismLauncher storage usage.
 
 It scans the PrismLauncher filesystem and identifies unnecessary or duplicate data.
 
@@ -43,7 +43,7 @@ It scans the PrismLauncher filesystem and identifies unnecessary or duplicate da
 | Asset Deduplication | Remove unused assets |
 | Modpack Cache Cleanup | Remove cached downloads |
 
-glint must **never modify PrismLauncher configuration files**.
+luma must **never modify PrismLauncher configuration files**.
 
 It only analyzes and cleans filesystem data.
 
@@ -62,7 +62,7 @@ Linux support may be added later.
 
 # 4. PrismLauncher Filesystem Layout
 
-glint operates on the PrismLauncher data directory.
+luma operates on the PrismLauncher data directory.
 
 ### Windows
 
@@ -216,7 +216,7 @@ Agents must verify asset usage before deletion.
 Main command:
 
 ```
-glint
+luma
 ```
 
 ### Subcommands
@@ -232,17 +232,17 @@ glint
 Example usage:
 
 ```
-glint scan
-glint clean --dry-run
-glint mods
-glint worlds
+luma scan
+luma clean --dry-run
+luma mods
+luma worlds
 ```
 
 ---
 
 # 11. CLI User Experience
 
-glint should provide clear terminal feedback.
+luma should provide clear terminal feedback.
 
 Example spinner output:
 
@@ -291,7 +291,7 @@ Parallel tasks:
 
 # 13. Safety Rules
 
-glint must never cause data loss.
+luma must never cause data loss.
 
 Mandatory safety features:
 
@@ -357,13 +357,13 @@ Agents must **never push directly to main**.
 PR title format:
 
 ```
-[glint] <feature description>
+[luma] <feature description>
 ```
 
 Example:
 
 ```
-[glint] add duplicate mod detection
+[luma] add duplicate mod detection
 ```
 
 Requirements:

@@ -61,15 +61,15 @@ jobs:
           - os: macos-14
             target: x86_64-apple-darwin
             ext: tar.gz
-            bin: glint
+            bin: luma
           - os: macos-14
             target: aarch64-apple-darwin
             ext: tar.gz
-            bin: glint
+            bin: luma
           - os: windows-latest
             target: x86_64-pc-windows-msvc
             ext: zip
-            bin: glint.exe
+            bin: luma.exe
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -89,26 +89,26 @@ jobs:
         run: |
           set -euo pipefail
           TAG="${{ needs.tag.outputs.tag }}"
-          NAME="glint-${TAG}-${{ matrix.target }}"
+          NAME="luma-prism-${TAG}-${{ matrix.target }}"
           mkdir -p dist
-          cp "target/${{ matrix.target }}/release/${{ matrix.bin }}" "dist/glint"
-          chmod +x dist/glint
-          tar -C dist -czf "${NAME}.tar.gz" glint
+          cp "target/${{ matrix.target }}/release/${{ matrix.bin }}" "dist/luma"
+          chmod +x dist/luma
+          tar -C dist -czf "${NAME}.tar.gz" luma
 
       - name: Package (Windows)
         if: matrix.ext == 'zip'
         shell: pwsh
         run: |
           $tag = "${{ needs.tag.outputs.tag }}"
-          $name = "glint-$tag-${{ matrix.target }}"
+          $name = "luma-prism-$tag-${{ matrix.target }}"
           New-Item -ItemType Directory -Path dist -Force | Out-Null
-          Copy-Item "target/${{ matrix.target }}/release/${{ matrix.bin }}" "dist/glint.exe"
-          Compress-Archive -Path "dist/glint.exe" -DestinationPath "$name.zip" -Force
+          Copy-Item "target/${{ matrix.target }}/release/${{ matrix.bin }}" "dist/luma.exe"
+          Compress-Archive -Path "dist/luma.exe" -DestinationPath "$name.zip" -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: glint-${{ matrix.target }}
+          name: luma-prism-${{ matrix.target }}
           path: |
             *.tar.gz
             *.zip

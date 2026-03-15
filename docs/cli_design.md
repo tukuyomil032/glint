@@ -14,13 +14,13 @@ usage
 Examples
 
 
-glint scan
+luma scan
 
-glint clean
+luma clean
 
-glint mods
+luma mods
 
-glint worlds
+luma worlds
 
 
 Options

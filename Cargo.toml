@@ -1,14 +1,18 @@
 [package]
-name = "glint"
+name = "luma-prism"
 version = "0.0.1"
 edition = "2024"
 description = "A fast PrismLauncher storage analyzer and safe cleanup CLI"
 license = "MIT"
 readme = "README.md"
-repository = "https://github.com/tukuyomil032/glint"
-homepage = "https://github.com/tukuyomil032/glint"
+repository = "https://github.com/tukuyomil032/luma-prism"
+homepage = "https://github.com/tukuyomil032/luma-prism"
 keywords = ["prismlauncher", "minecraft", "cli", "cleanup", "storage"]
 categories = ["command-line-utilities", "filesystem"]
+
+[[bin]]
+name = "luma"
+path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0"

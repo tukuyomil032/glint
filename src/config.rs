@@ -43,5 +43,5 @@ pub fn save_config(cfg: &AppConfig) -> Result<()> {
 
 pub fn config_path() -> Result<PathBuf> {
     let base = dirs::config_dir().context("failed to resolve config dir")?;
-    Ok(base.join("glint").join("config.json"))
+    Ok(base.join("luma-prism").join("config.json"))
 }

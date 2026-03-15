@@ -1,6 +1,6 @@
 # CLI UX
 
-During scanning glint should display spinners.
+During scanning luma should display spinners.
 
 
 Example
