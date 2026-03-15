@@ -1,7 +1,14 @@
 [package]
 name = "glint"
-version = "0.1.0"
+version = "0.0.0"
 edition = "2024"
+description = "A fast PrismLauncher storage analyzer and safe cleanup CLI"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/tukuyomil032/glint"
+homepage = "https://github.com/tukuyomil032/glint"
+keywords = ["prismlauncher", "minecraft", "cli", "cleanup", "storage"]
+categories = ["command-line-utilities", "filesystem"]
 
 [dependencies]
 anyhow = "1.0"

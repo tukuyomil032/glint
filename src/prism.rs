@@ -85,3 +85,18 @@ pub fn collect_cleanup_targets(root: &Path) -> Vec<CleanupTarget> {
 
     targets
 }
+
+pub fn list_instances(root: &Path) -> Vec<String> {
+    let instances_dir = root.join("instances");
+    let Ok(entries) = std::fs::read_dir(instances_dir) else {
+        return Vec::new();
+    };
+
+    let mut names: Vec<String> = entries
+        .flatten()
+        .filter(|entry| entry.path().is_dir())
+        .map(|entry| entry.file_name().to_string_lossy().to_string())
+        .collect();
+    names.sort();
+    names
+}

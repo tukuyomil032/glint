@@ -1,10 +1,22 @@
 use crate::cli::Language;
+use crate::i18n::{Msg, text};
 use crate::prism::CleanupTarget;
 use crate::scanner::dir_size;
 use anyhow::{Context, Result};
-use dialoguer::{Confirm, theme::ColorfulTheme};
+use dialoguer::{Confirm, MultiSelect, theme::ColorfulTheme};
+use indicatif::HumanBytes;
 use serde::Serialize;
+use std::collections::HashSet;
 use std::path::Path;
+use std::time::{Duration, SystemTime};
+
+#[derive(Debug, Clone)]
+pub struct CleanFilter {
+    pub kinds: Vec<String>,
+    pub min_size_bytes: Option<u64>,
+    pub older_than_days: Option<u64>,
+    pub interactive_select: bool,
+}
 
 #[derive(Debug, Clone, Serialize)]
 pub struct CleanEntry {
@@ -25,6 +37,93 @@ pub struct CleanSummary {
     pub entries: Vec<CleanEntry>,
 }
 
+pub fn filter_and_select_targets(
+    targets: &[CleanupTarget],
+    filter: &CleanFilter,
+    lang: Language,
+    allow_interactive: bool,
+) -> Result<Vec<CleanupTarget>> {
+    let kind_set: HashSet<String> = filter.kinds.iter().map(|kind| kind.to_lowercase()).collect();
+    let min_size = filter.min_size_bytes.unwrap_or(0);
+    let now = SystemTime::now();
+    let older_than = filter
+        .older_than_days
+        .map(|days| now - Duration::from_secs(days.saturating_mul(86_400)));
+
+    let mut candidates: Vec<(CleanupTarget, u64, Option<SystemTime>)> = targets
+        .iter()
+        .filter_map(|target| {
+            if !target.path.exists() {
+                return None;
+            }
+
+            if !kind_set.is_empty() && !kind_set.contains(&target.kind.to_lowercase()) {
+                return None;
+            }
+
+            let bytes = dir_size(&target.path);
+            if bytes < min_size {
+                return None;
+            }
+
+            let modified = target.path.metadata().ok().and_then(|meta| meta.modified().ok());
+            if let Some(threshold) = older_than {
+                match modified {
+                    Some(mtime) if mtime <= threshold => {}
+                    _ => return None,
+                }
+            }
+
+            Some((target.clone(), bytes, modified))
+        })
+        .collect();
+
+    if candidates.is_empty() {
+        return Ok(Vec::new());
+    }
+
+    candidates.sort_by(|a, b| b.1.cmp(&a.1));
+
+    if !filter.interactive_select || !allow_interactive {
+        return Ok(candidates.into_iter().map(|row| row.0).collect());
+    }
+
+    let theme = ColorfulTheme::default();
+    let items: Vec<String> = candidates
+        .iter()
+        .map(|(target, bytes, modified)| {
+            let age = modified
+                .and_then(|mtime| now.duration_since(mtime).ok())
+                .map(|d| format!("{}d", d.as_secs() / 86_400))
+                .unwrap_or_else(|| "-".to_string());
+            format!(
+                "{} [{}] {} age:{}",
+                target.label,
+                target.kind,
+                HumanBytes(*bytes),
+                age
+            )
+        })
+        .collect();
+
+    let defaults = vec![true; items.len()];
+    let selected = MultiSelect::with_theme(&theme)
+        .with_prompt(text(lang, Msg::CleanSelectPrompt))
+        .items(&items)
+        .defaults(&defaults)
+        .interact()
+        .context(text(lang, Msg::CleanSelectReadFailed))?;
+
+    if selected.is_empty() {
+        return Ok(Vec::new());
+    }
+
+    Ok(selected
+        .into_iter()
+        .filter_map(|index| candidates.get(index).map(|row| row.0.clone()))
+        .collect())
+}
+
 pub fn run_clean(
     root: &Path,
     targets: &[CleanupTarget],
@@ -36,16 +135,10 @@ pub fn run_clean(
 
     if !dry_run && !yes {
         let approved = Confirm::with_theme(&theme)
-            .with_prompt(match lang {
-                Language::En => "Proceed with cleanup? (targets are moved to trash)",
-                Language::Ja => "削除を実行しますか？(対象はゴミ箱へ移動)",
-            })
+            .with_prompt(text(lang, Msg::CleanConfirmPrompt))
             .default(false)
             .interact()
-            .context(match lang {
-                Language::En => "failed to read confirmation input",
-                Language::Ja => "確認入力の読み取りに失敗しました",
-            })?;
+            .context(text(lang, Msg::CleanConfirmReadFailed))?;
 
         if !approved {
             return Ok(CleanSummary {
@@ -85,19 +178,13 @@ pub fn run_clean(
 
         if !is_within_root(root, &target.path) {
             entry.success = false;
-            entry.message = match lang {
-                Language::En => "path is outside PrismLauncher root".to_string(),
-                Language::Ja => "root外のパスは処理不可".to_string(),
-            };
+            entry.message = text(lang, Msg::CleanPathOutsideRoot).to_string();
             entries.push(entry);
             continue;
         }
 
         if dry_run {
-            entry.message = match lang {
-                Language::En => "scheduled for deletion".to_string(),
-                Language::Ja => "削除予定".to_string(),
-            };
+            entry.message = text(lang, Msg::CleanScheduled).to_string();
             cleaned_bytes += bytes;
             entries.push(entry);
             continue;
@@ -105,18 +192,12 @@ pub fn run_clean(
 
         match trash::delete(&target.path) {
             Ok(_) => {
-                entry.message = match lang {
-                    Language::En => "moved to trash".to_string(),
-                    Language::Ja => "ゴミ箱へ移動".to_string(),
-                };
+                entry.message = text(lang, Msg::CleanMovedToTrash).to_string();
                 cleaned_bytes += bytes;
             }
             Err(err) => {
                 entry.success = false;
-                entry.message = match lang {
-                    Language::En => format!("failed: {err}"),
-                    Language::Ja => format!("削除失敗: {err}"),
-                };
+                entry.message = format!("{}: {err}", text(lang, Msg::CleanFailedPrefix));
             }
         }
 

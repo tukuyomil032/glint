@@ -1,4 +1,5 @@
 use clap::{ArgAction, Parser, Subcommand, ValueEnum};
+use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 #[derive(Debug, Parser)]
@@ -20,10 +21,6 @@ pub struct Cli {
     #[arg(long, short = 'v', global = true, action = ArgAction::SetTrue)]
     pub verbose: bool,
 
-    /// Output language
-    #[arg(long, global = true, value_enum, default_value_t = Language::En)]
-    pub lang: Language,
-
     /// Log level
     #[arg(long, global = true, value_enum, default_value_t = LogLevel::Warn)]
     pub log_level: LogLevel,
@@ -32,7 +29,7 @@ pub struct Cli {
     pub command: Command,
 }
 
-#[derive(Debug, Clone, Copy, Eq, PartialEq, ValueEnum)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, ValueEnum, Serialize, Deserialize)]
 pub enum Language {
     En,
     Ja,
@@ -62,7 +59,15 @@ impl LogLevel {
 #[derive(Debug, Subcommand)]
 pub enum Command {
     /// Analyze reclaimable storage
-    Scan,
+    Scan {
+        /// Scan all instances without interactive selection
+        #[arg(long, action = ArgAction::SetTrue)]
+        all_instances: bool,
+
+        /// Restrict scan to specific instances (repeatable)
+        #[arg(long = "instance")]
+        instances: Vec<String>,
+    },
 
     /// Clean targets (dry-run by default)
     Clean {
@@ -85,22 +90,57 @@ pub enum Command {
         /// Include detected unused assets as clean candidates
         #[arg(long, action = ArgAction::SetTrue)]
         include_unused_assets: bool,
+
+        /// Filter by target kind (repeatable: global, instance, advanced)
+        #[arg(long = "kind")]
+        kinds: Vec<String>,
+
+        /// Minimum size filter (e.g. 500MB, 2GB, 1024)
+        #[arg(long)]
+        min_size: Option<String>,
+
+        /// Keep only candidates older than N days (by modified time)
+        #[arg(long)]
+        older_than_days: Option<u64>,
+
+        /// Interactively select filtered candidates before cleaning
+        #[arg(long, action = ArgAction::SetTrue)]
+        select: bool,
     },
 
     /// Detect duplicate mods across instances
     Mods,
 
     /// Analyze world sizes
-    Worlds,
+    Worlds {
+        /// Show per-world breakdown (region/playerdata/poi/etc.)
+        #[arg(long, action = ArgAction::SetTrue)]
+        breakdown: bool,
+    },
 
     /// Show per-instance usage
     Usage,
+
+    /// Manage glint configuration
+    Config {
+        /// Set default output language
+        #[arg(long, value_enum)]
+        lang: Option<Language>,
+
+        /// Print current configuration
+        #[arg(long, action = ArgAction::SetTrue)]
+        show: bool,
+    },
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct CleanMode {
     pub dry_run: bool,
     pub yes: bool,
     pub include_unused_libraries: bool,
     pub include_unused_assets: bool,
+    pub kinds: Vec<String>,
+    pub min_size_bytes: Option<u64>,
+    pub older_than_days: Option<u64>,
+    pub select: bool,
 }
